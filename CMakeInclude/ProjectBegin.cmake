@@ -1,3 +1,25 @@
+set(c_StorageConfigFilePath ${c_RootProjectDirPath}/StorageConfig.cmake)
+#file(RELATIVE_PATH StorageConfigRelativeToRootFilePath ${c_RootDirPath} ${c_StorageConfigFilePath})
+set(c_StorageConfigDownloadingFailedTips "Failed to download the file, possibly due to incorrect storage config, see: ${c_StorageConfigFilePath}")
+if(NOT EXISTS "${c_StorageConfigFilePath}")
+	# VPN: http://172.31.222.172/
+	# WLAN: http://192.168.31.233/
+	set(VarStorageIPAddress http://WishingContributor:1@192.168.31.233/sainimu78_Storage)
+	set(FileContent
+"set(c_StorageAddrPath \"${VarStorageIPAddress}\")
+if(WIN32)
+	set(c_StorageDirPath \"F:/sainimu78_Storage\")
+else()
+	set(c_StorageDirPath \"/mnt/Ubuntu_Storage\")
+endif()
+")
+	
+	file(WRITE "${c_StorageConfigFilePath}" "${FileContent}")
+	message(STATUS "Generated ${c_StorageConfigFilePath}")
+endif()
+
+include(${c_StorageConfigFilePath})
+
 FUNCTION(create_source_group relativeSourcePath)
   FOREACH(currentSourceFile ${ARGN})
     FILE(RELATIVE_PATH folder ${relativeSourcePath} ${currentSourceFile})
@@ -29,14 +51,14 @@ function(download_files_reserved ListSrcToDownload ListDstDownloaded)
 		if(status EQUAL 0)
 			message(STATUS "File downloaded successfully.")
 		else()
-			message(FATAL_ERROR "File download failed.")
+			message(FATAL_ERROR "${c_StorageConfigDownloadingFailedTips}")
 		endif()
 	endforeach()
 endfunction()
 
 function(zip_directory DirPathToZip ZipFilePath)
 	if(WIN32)
-		include(${c_RootCMakeDirPath}/GetZip.cmake)
+		include(${c_RootCMakeProjectFrameworkDirPath}/GetZip.cmake)
 		execute_process(
 			#COMMAND ${CMAKE_COMMAND} -E echo "Packaging ${c_ProjectName} ..."
 			COMMAND ${ExeFilePath7z} a "${ZipFilePath}" "${DirPathToZip}"
@@ -55,7 +77,7 @@ endfunction()
 
 function(unzip_file ZipFilePath DirPathUnzipTo)
 	if(WIN32)
-		include(${c_RootCMakeDirPath}/GetZip.cmake)
+		include(${c_RootCMakeProjectFrameworkDirPath}/GetZip.cmake)
 		string(REPLACE "/" "\\" DirPathToCreate "${DirPathUnzipTo}")
 		execute_process(
 			COMMAND ${ExeFilePath7z} x "${ZipFilePath}" -o${DirPathToCreate}
@@ -82,7 +104,7 @@ function(download_zip_replace_dir SrcAddrZipFilePath DstDownloadedFilePath DstUn
 		unzip_file(${DstDownloadedFilePath} ${ParentDir})		
 		file(REMOVE "${DstDownloadedFilePath}")
 	else()
-		message(FATAL_ERROR "File download failed.")
+		message(FATAL_ERROR "${c_StorageConfigDownloadingFailedTips}")
 	endif()
 endfunction()
 

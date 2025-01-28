@@ -1,4 +1,4 @@
-include(${c_RootCMakeDirPath}/InlineDownloadAndUnzip.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/InlineDownloadAndUnzip.cmake)
 
 target_include_directories(${ModuleName} PRIVATE "${v_ListLibIncludeDirPathPrivate}")
 
