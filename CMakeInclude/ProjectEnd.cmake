@@ -84,13 +84,13 @@ set(c_ProjectInstallingTargetDirPath "$<$<CONFIG:Debug>:${c_ProjectInstallingDir
 
 install(FILES "${c_RootDirPath}/LICENSE.md" DESTINATION ${c_ProjectName})
 
-include(${c_RootCMakeDirPath}/Option.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/Option.cmake)
 
 file(RELATIVE_PATH ProjectRelativeDirPath "${c_RootProjectDirPath}" "${c_ProjectDirPath}")
 set(c_RootTempDirPath ${c_RootDirPath}/TempForSetupOrRelease)
 set(c_ProjectTempDirPath ${c_RootTempDirPath}/${ProjectRelativeDirPath}/${c_ProjectPlatform})
 
-set(StorageConfigFilePath ${c_RootCMakeDirPath}/StorageConfig.cmake)
+set(StorageConfigFilePath ${c_RootCMakeProjectFrameworkDirPath}/StorageConfig.cmake)
 if(NOT EXISTS "${StorageConfigFilePath}")
 	# VPN: http://172.31.222.172/
 	# WLAN: http://192.168.31.233/
@@ -116,7 +116,7 @@ if(PROJECT_SETUP OR PROJECT_RELEASE)
 	set(IsSetupOrReleaseMode ON)
 endif()
 #if(IsSetupOrReleaseMode OR NOT EXISTS "${CMAKE_CACHEFILE_DIR}")
-#	include(${c_RootCMakeDirPath}/GetZip.cmake)
+#	include(${c_RootCMakeProjectFrameworkDirPath}/GetZip.cmake)
 #endif()
 if(NOT IsSetupOrReleaseMode AND EXISTS "${c_ProjectInstalledDirPath}")
     message(STATUS "Clearing install directory: ${c_ProjectInstalledDirPath}")

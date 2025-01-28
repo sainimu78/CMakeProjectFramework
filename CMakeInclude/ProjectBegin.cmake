@@ -36,7 +36,7 @@ endfunction()
 
 function(zip_directory DirPathToZip ZipFilePath)
 	if(WIN32)
-		include(${c_RootCMakeDirPath}/GetZip.cmake)
+		include(${c_RootCMakeProjectFrameworkDirPath}/GetZip.cmake)
 		execute_process(
 			#COMMAND ${CMAKE_COMMAND} -E echo "Packaging ${c_ProjectName} ..."
 			COMMAND ${ExeFilePath7z} a "${ZipFilePath}" "${DirPathToZip}"
@@ -55,7 +55,7 @@ endfunction()
 
 function(unzip_file ZipFilePath DirPathUnzipTo)
 	if(WIN32)
-		include(${c_RootCMakeDirPath}/GetZip.cmake)
+		include(${c_RootCMakeProjectFrameworkDirPath}/GetZip.cmake)
 		string(REPLACE "/" "\\" DirPathToCreate "${DirPathUnzipTo}")
 		execute_process(
 			COMMAND ${ExeFilePath7z} x "${ZipFilePath}" -o${DirPathToCreate}
