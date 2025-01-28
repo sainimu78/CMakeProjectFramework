@@ -90,25 +90,6 @@ file(RELATIVE_PATH ProjectRelativeDirPath "${c_RootProjectDirPath}" "${c_Project
 set(c_RootTempDirPath ${c_RootDirPath}/TempForSetupOrRelease)
 set(c_ProjectTempDirPath ${c_RootTempDirPath}/${ProjectRelativeDirPath}/${c_ProjectPlatform})
 
-set(StorageConfigFilePath ${c_RootProjectDirPath}/StorageConfig.cmake)
-if(NOT EXISTS "${StorageConfigFilePath}")
-	# VPN: http://172.31.222.172/
-	# WLAN: http://192.168.31.233/
-	set(FileContent
-"set(c_StorageAddrPath \"http://WishingContributor:1@192.168.31.233/sainimu78_Storage\")
-if(WIN32)
-	set(c_StorageDirPath \"F:/sainimu78_Storage\")
-else()
-	set(c_StorageDirPath \"/mnt/Ubuntu_Storage\")
-endif()"
-	)
-	
-	file(WRITE "${StorageConfigFilePath}" "${FileContent}")
-	message(STATUS "Generated ${StorageConfigFilePath}")
-endif()
-
-include(${StorageConfigFilePath})
-
 set(c_PlatformReleaseDirPath ${c_StorageDirPath}/Release/${c_ProjectPlatform})
 set(c_ProjectInstalledDirPath ${CMAKE_INSTALL_PREFIX}/${c_ProjectName})
 set(IsSetupOrReleaseMode OFF)
