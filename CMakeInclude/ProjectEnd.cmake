@@ -90,7 +90,7 @@ file(RELATIVE_PATH ProjectRelativeDirPath "${c_RootProjectDirPath}" "${c_Project
 set(c_RootTempDirPath ${c_RootDirPath}/TempForSetupOrRelease)
 set(c_ProjectTempDirPath ${c_RootTempDirPath}/${ProjectRelativeDirPath}/${c_ProjectPlatform})
 
-set(StorageConfigFilePath ${c_RootCMakeProjectFrameworkDirPath}/StorageConfig.cmake)
+set(StorageConfigFilePath ${c_RootProjectDirPath}/StorageConfig.cmake)
 if(NOT EXISTS "${StorageConfigFilePath}")
 	# VPN: http://172.31.222.172/
 	# WLAN: http://192.168.31.233/
