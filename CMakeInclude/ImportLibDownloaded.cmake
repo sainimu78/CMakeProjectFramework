@@ -42,62 +42,64 @@ if(v_ListImportedLibFileName)
 	)
 endif()
 
-if(WIN32)
-	if(v_LibPlatformArchDirPath)
-		set(BinDirPathDebug ${v_LibPlatformArchDirPath}/Debug/${c_BinDirName})
-		set(BinDirPathRelease ${v_LibPlatformArchDirPath}/Release/${c_BinDirName})
-		
-		file(GLOB ListDeployingFilePathDebug "${BinDirPathDebug}/*")
-		if(LibFilePathsDebugPrivate)
-			list(GET ListDeployingFilePathDebug 0 Item0)
-			get_filename_component(FileName "${Item0}" NAME)
-			set(FilePathDebug ${ProjectBinDirPathDebug}/${FileName})
+if(c_ProjectRequiredLibInstallation)
+	if(WIN32)
+		if(v_LibPlatformArchDirPath)
+			set(BinDirPathDebug ${v_LibPlatformArchDirPath}/Debug/${c_BinDirName})
+			set(BinDirPathRelease ${v_LibPlatformArchDirPath}/Release/${c_BinDirName})
+			
+			file(GLOB ListDeployingFilePathDebug "${BinDirPathDebug}/*")
+			if(LibFilePathsDebugPrivate)
+				list(GET ListDeployingFilePathDebug 0 Item0)
+				get_filename_component(FileName "${Item0}" NAME)
+				set(FilePathDebug ${ProjectBinDirPathDebug}/${FileName})
+			endif()
+			if(PROJECT_SETUP OR NOT EXISTS "${FilePathDebug}")
+				message("Deploying: ${BinDirPathDebug} ${ProjectBinDirPathDebug}")
+				file(COPY "${BinDirPathDebug}/" DESTINATION "${ProjectBinDirPathDebug}/")
+			endif()
+			
+			file(GLOB ListDeployingFilePathRelease "${BinDirPathRelease}/*")
+			if(LibFilePathsReleasePrivate)
+				list(GET ListDeployingFilePathRelease 0 Item0)
+				get_filename_component(FileName "${Item0}" NAME)
+				set(FilePathRelease ${ProjectBinDirPathRelease}/${FileName})
+			endif()
+			if(PROJECT_SETUP OR NOT EXISTS "${FilePathRelease}")
+				message("Deploying: ${BinDirPathRelease} ${ProjectBinDirPathRelease}")
+				file(COPY "${BinDirPathRelease}/" DESTINATION "${ProjectBinDirPathRelease}/")
+			endif()
+			
+			install(DIRECTORY "${BinDirPathDebug}/"
+				DESTINATION "${c_ProjectInstallingTargetDirPathDebug}/${c_BinDirName}/"
+				CONFIGURATIONS Debug
+				#FILES_MATCHING PATTERN "*.so"
+				USE_SOURCE_PERMISSIONS
+			)
+			install(DIRECTORY "${BinDirPathRelease}/"
+				DESTINATION "${c_ProjectInstallingTargetDirPathRelease}/${c_BinDirName}/"
+				CONFIGURATIONS Release
+				#FILES_MATCHING PATTERN "*.so"
+				USE_SOURCE_PERMISSIONS
+			)
 		endif()
-		if(PROJECT_SETUP OR NOT EXISTS "${FilePathDebug}")
-			message("Deploying: ${BinDirPathDebug} ${ProjectBinDirPathDebug}")
-			file(COPY "${BinDirPathDebug}/" DESTINATION "${ProjectBinDirPathDebug}/")
+	else()
+		if(LibDirPathDebug)
+			install(DIRECTORY "${LibDirPathDebug}/"
+				DESTINATION "${c_ProjectInstallingTargetDirPathDebug}/${c_LibDirName}/"
+				CONFIGURATIONS Debug
+				#FILES_MATCHING PATTERN "*.so"
+				USE_SOURCE_PERMISSIONS
+			)
 		endif()
-		
-		file(GLOB ListDeployingFilePathRelease "${BinDirPathRelease}/*")
-		if(LibFilePathsReleasePrivate)
-			list(GET ListDeployingFilePathRelease 0 Item0)
-			get_filename_component(FileName "${Item0}" NAME)
-			set(FilePathRelease ${ProjectBinDirPathRelease}/${FileName})
+		if(LibDirPathRelease)
+			install(DIRECTORY "${LibDirPathRelease}/"
+				DESTINATION "${c_ProjectInstallingTargetDirPathRelease}/${c_LibDirName}/"
+				CONFIGURATIONS Release
+				#FILES_MATCHING PATTERN "*.so"
+				USE_SOURCE_PERMISSIONS
+			)
 		endif()
-		if(PROJECT_SETUP OR NOT EXISTS "${FilePathRelease}")
-			message("Deploying: ${BinDirPathRelease} ${ProjectBinDirPathRelease}")
-			file(COPY "${BinDirPathRelease}/" DESTINATION "${ProjectBinDirPathRelease}/")
-		endif()
-		
-		install(DIRECTORY "${BinDirPathDebug}/"
-			DESTINATION "${c_ProjectInstallingTargetDirPathDebug}/${c_BinDirName}/"
-			CONFIGURATIONS Debug
-			#FILES_MATCHING PATTERN "*.so"
-			USE_SOURCE_PERMISSIONS
-		)
-		install(DIRECTORY "${BinDirPathRelease}/"
-			DESTINATION "${c_ProjectInstallingTargetDirPathRelease}/${c_BinDirName}/"
-			CONFIGURATIONS Release
-			#FILES_MATCHING PATTERN "*.so"
-			USE_SOURCE_PERMISSIONS
-		)
-	endif()
-else()
-	if(LibDirPathDebug)
-		install(DIRECTORY "${LibDirPathDebug}/"
-			DESTINATION "${c_ProjectInstallingTargetDirPathDebug}/${c_LibDirName}/"
-			CONFIGURATIONS Debug
-			#FILES_MATCHING PATTERN "*.so"
-			USE_SOURCE_PERMISSIONS
-		)
-	endif()
-	if(LibDirPathRelease)
-		install(DIRECTORY "${LibDirPathRelease}/"
-			DESTINATION "${c_ProjectInstallingTargetDirPathRelease}/${c_LibDirName}/"
-			CONFIGURATIONS Release
-			#FILES_MATCHING PATTERN "*.so"
-			USE_SOURCE_PERMISSIONS
-		)
 	endif()
 endif()
 

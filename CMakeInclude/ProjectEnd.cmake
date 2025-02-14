@@ -1,4 +1,5 @@
 set(c_ProjectDirPath ${CMAKE_CURRENT_SOURCE_DIR})
+set(c_ProjectRequiredLibInstallation TRUE)
 
 #message(STATUS "AAAAAAAAAAAAAAAAA  ${CMAKE_CXX_COMPILER}")
 
