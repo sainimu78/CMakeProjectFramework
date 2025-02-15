@@ -108,6 +108,33 @@ function(download_zip_replace_dir SrcAddrZipFilePath DstDownloadedFilePath DstUn
 	endif()
 endfunction()
 
+function(deploy_files src_list dst_list project_lib_dir_path install_target_dir_path)
+    list(LENGTH ${src_list} Len0)
+    list(LENGTH ${dst_list} Len1)
+    if(Len0 EQUAL Len1)
+        math(EXPR Len0MinusOne "${Len0} - 1")
+        foreach(Idx RANGE 0 ${Len0MinusOne})
+            list(GET ${src_list} ${Idx} SrcFilePath)
+            list(GET ${dst_list} ${Idx} RelativeDstDirPath)
+            get_filename_component(FileName "${SrcFilePath}" NAME)
+            set(DstDirPath ${project_lib_dir_path}/${RelativeDstDirPath})
+            set(DstFilePath ${DstDirPath}/${FileName})
+            if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
+                message("Deploying: ${SrcFilePath} ${DstDirPath}")
+                file(COPY "${SrcFilePath}" DESTINATION "${DstDirPath}")
+            endif()
+            set(DstInstallingDirPath ${install_target_dir_path})
+            if(RelativeDstDirPath)
+                set(DstInstallingDirPath ${DstInstallingDirPath}/${RelativeDstDirPath})
+            endif()
+            install(FILES "${SrcFilePath}"
+                DESTINATION "${DstInstallingDirPath}/")
+        endforeach()
+    else()
+        message(FATAL_ERROR "The two lists are not of the same length!")
+    endif()
+endfunction()
+
 # 声明一个用于跟踪已下载文件的变量，使用 CACHE 将其持久化
 set(downloaded_files "" CACHE STRING "List of downloaded files")
 
