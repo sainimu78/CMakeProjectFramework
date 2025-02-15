@@ -1,8 +1,8 @@
 if(v_FindPackageBasedIntegration)
-	find_package(${v_LibNameFindPackgetBased} COMPONENTS ${v_ListComponentFindPackgeBased} REQUIRED)
+	find_package(${v_LibNameFindPackgeBased} ${v_LibVersionFindPackageBased} REQUIRED COMPONENTS ${v_ListComponentFindPackgeBased})
 	set(ListLinkingLib "")
 	foreach(It ${v_ListComponentFindPackgeBased})
-		set(ConcatedName ${v_LibNameFindPackgetBased}::${It})
+		set(ConcatedName ${v_LibNameFindPackgeBased}::${It})
 		list(APPEND ListLinkingLib ${ConcatedName})
 	endforeach()
 	target_link_libraries(${ModuleName} PRIVATE ${ListLinkingLib})
@@ -59,9 +59,10 @@ endif()
 #begin, Required
 unset(v_ListLibIncludeDirPathPrivate)
 
+unset(v_LibVersionFindPackageBased)
 unset(v_PackageRootDirPathFindPackageBased)
 unset(v_FindPackageBasedIntegration)
-unset(v_LibNameFindPackgetBased)
+unset(v_LibNameFindPackgeBased)
 unset(v_ListComponentFindPackgeBased)
 #end
 

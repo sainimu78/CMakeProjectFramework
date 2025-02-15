@@ -1,30 +1,30 @@
 include(${c_RootCMakeProjectFrameworkDirPath}/InlineDownloadAndUnzip.cmake)
 
 if(v_FindPackageBasedIntegration)
-	find_package(${v_LibNameFindPackgetBased} COMPONENTS ${v_ListComponentFindPackgeBased} REQUIRED)
+	find_package(${v_LibNameFindPackgeBased} ${v_LibVersionFindPackageBased} REQUIRED COMPONENTS ${v_ListComponentFindPackgeBased})
 	set(ListLinkingLib "")
 	foreach(It ${v_ListComponentFindPackgeBased})
-		set(ConcatedName ${v_LibNameFindPackgetBased}::${It})
+		set(ConcatedName ${v_LibNameFindPackgeBased}::${It})
 		list(APPEND ListLinkingLib ${ConcatedName})
 	endforeach()
 	target_link_libraries(${ModuleName} PRIVATE ${ListLinkingLib})
-	if(c_ProjectRequiredLibInstallation)
+	if(c_ProjectRequiredBinInstalling)
 		if(WIN32)
 			if(v_ListDeployingBinFilePathNoExtFindPackageBasedDebug)
 				foreach(It IN LISTS v_ListDeployingBinFilePathNoExtFindPackageBasedDebug)
 					set(SrcFilePath0 ${It}${c_SharedLibFileExt})
 					get_filename_component(FileName "${SrcFilePath0}" NAME)
-					set(DstFilePath0 ${ProjectBinDirPathDebug}/${FileName})
+					set(DstFilePath0 ${c_ProjectBinDirPathDebug}/${FileName})
 					if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath0}")
-						message("Deploying: ${SrcFilePath0} ${ProjectBinDirPathDebug}")
-						file(COPY "${SrcFilePath0}" DESTINATION "${ProjectBinDirPathDebug}")
+						message("Deploying: ${SrcFilePath0} ${c_ProjectBinDirPathDebug}")
+						file(COPY "${SrcFilePath0}" DESTINATION "${c_ProjectBinDirPathDebug}")
 					endif()
 					set(SrcFilePath1 ${It}.pdb)
 					get_filename_component(FileName "${SrcFilePath1}" NAME)
-					set(DstFilePath1 ${ProjectBinDirPathDebug}/${FileName})
+					set(DstFilePath1 ${c_ProjectBinDirPathDebug}/${FileName})
 					if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath1}")
-						message("Deploying: ${SrcFilePath1} ${ProjectBinDirPathDebug}")
-						file(COPY "${SrcFilePath1}" DESTINATION "${ProjectBinDirPathDebug}")
+						message("Deploying: ${SrcFilePath1} ${c_ProjectBinDirPathDebug}")
+						file(COPY "${SrcFilePath1}" DESTINATION "${c_ProjectBinDirPathDebug}")
 					endif()
 					install(FILES "${SrcFilePath0}" "${SrcFilePath1}"
 						DESTINATION "${c_ProjectInstallingTargetDirPathDebug}/${c_BinDirName}/")
@@ -34,10 +34,10 @@ if(v_FindPackageBasedIntegration)
 				foreach(It IN LISTS v_ListDeployingBinFilePathNoExtFindPackageBasedRelease)
 					set(SrcFilePath ${It}${c_SharedLibFileExt})
 					get_filename_component(FileName "${SrcFilePath}" NAME)
-					set(DstFilePath ${ProjectBinDirPathRelease}/${FileName})
+					set(DstFilePath ${c_ProjectBinDirPathRelease}/${FileName})
 					if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
-						message("Deploying: ${SrcFilePath} ${ProjectBinDirPathRelease}")
-						file(COPY "${SrcFilePath}" DESTINATION "${ProjectBinDirPathRelease}")
+						message("Deploying: ${SrcFilePath} ${c_ProjectBinDirPathRelease}")
+						file(COPY "${SrcFilePath}" DESTINATION "${c_ProjectBinDirPathRelease}")
 					endif()
 					install(FILES "${SrcFilePath}"
 						DESTINATION "${c_ProjectInstallingTargetDirPathRelease}/${c_BinDirName}/")
@@ -52,7 +52,7 @@ if(v_FindPackageBasedIntegration)
 			#		list(GET v_ListDeployingSrcFilePathFindPackageBasedDebug ${Idx} SrcFilePath)
 			#		list(GET v_ListDeployingDstRelativeDirPathFindPackageBasedDebug ${Idx} RelativeDstDirPath)
 			#		get_filename_component(FileName "${SrcFilePath}" NAME)
-			#		set(DstDirPath ${ProjectBinDirPathDebug}/${RelativeDstDirPath})
+			#		set(DstDirPath ${c_ProjectBinDirPathDebug}/${RelativeDstDirPath})
 			#		set(DstFilePath ${DstDirPath}/${FileName})
 			#		if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
 			#			message("Deploying: ${SrcFilePath} ${DstDirPath}")
@@ -77,7 +77,7 @@ if(v_FindPackageBasedIntegration)
 			#		list(GET v_ListDeployingSrcFilePathFindPackageBasedRelease ${Idx} SrcFilePath)
 			#		list(GET v_ListDeployingDstRelativeDirPathFindPackageBasedRelease ${Idx} RelativeDstDirPath)
 			#		get_filename_component(FileName "${SrcFilePath}" NAME)
-			#		set(DstDirPath ${ProjectBinDirPathRelease}/${RelativeDstDirPath})
+			#		set(DstDirPath ${c_ProjectBinDirPathRelease}/${RelativeDstDirPath})
 			#		set(DstFilePath ${DstDirPath}/${FileName})
 			#		if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
 			#			message("Deploying: ${SrcFilePath} ${DstDirPath}")
@@ -94,18 +94,22 @@ if(v_FindPackageBasedIntegration)
 			#	message(FATAL_ERROR "The two lists are not of the same length!")
 			#endif()
 
-			deploy_files(
-				v_ListDeployingSrcFilePathFindPackageBasedDebug
-				v_ListDeployingDstRelativeDirPathFindPackageBasedDebug
-				${ProjectBinDirPathDebug}
-				${c_ProjectInstallingTargetDirPathDebug}/${c_BinDirName}
-			)
-			deploy_files(
-				v_ListDeployingSrcFilePathFindPackageBasedRelease
-				v_ListDeployingDstRelativeDirPathFindPackageBasedRelease
-				${ProjectBinDirPathRelease}
-				${c_ProjectInstallingTargetDirPathRelease}/${c_BinDirName}
-			)
+			if(v_ListDeployingSrcFilePathFindPackageBasedDebug)
+				deploy_files(
+					v_ListDeployingSrcFilePathFindPackageBasedDebug
+					v_ListDeployingDstRelativeDirPathFindPackageBasedDebug
+					${c_ProjectBinDirPathDebug}
+					${c_ProjectInstallingTargetDirPathDebug}/${c_BinDirName}
+				)
+			endif()
+			if(v_ListDeployingSrcFilePathFindPackageBasedRelease)
+				deploy_files(
+					v_ListDeployingSrcFilePathFindPackageBasedRelease
+					v_ListDeployingDstRelativeDirPathFindPackageBasedRelease
+					${c_ProjectBinDirPathRelease}
+					${c_ProjectInstallingTargetDirPathRelease}/${c_BinDirName}
+				)
+			endif()
 		else()
 			if(v_ListDeployingBinFilePathNoExtFindPackageBasedDebug)
 				foreach(It IN LISTS v_ListDeployingBinFilePathNoExtFindPackageBasedDebug)
@@ -128,7 +132,7 @@ if(v_FindPackageBasedIntegration)
 			#		list(GET v_ListDeployingSrcFilePathFindPackageBasedDebug ${Idx} SrcFilePath)
 			#		list(GET v_ListDeployingDstRelativeDirPathFindPackageBasedDebug ${Idx} RelativeDstDirPath)
 			#		get_filename_component(FileName "${SrcFilePath}" NAME)
-			#		set(DstDirPath ${ProjectLibDirPathDebug}/${RelativeDstDirPath})
+			#		set(DstDirPath ${c_ProjectLibDirPathDebug}/${RelativeDstDirPath})
 			#		set(DstFilePath ${DstDirPath}/${FileName})
 			#		if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
 			#			message("Deploying: ${SrcFilePath} ${DstDirPath}")
@@ -152,7 +156,7 @@ if(v_FindPackageBasedIntegration)
 			#		list(GET v_ListDeployingSrcFilePathFindPackageBasedRelease ${Idx} SrcFilePath)
 			#		list(GET v_ListDeployingDstRelativeDirPathFindPackageBasedRelease ${Idx} RelativeDstDirPath)
 			#		get_filename_component(FileName "${SrcFilePath}" NAME)
-			#		set(DstDirPath ${ProjectLibDirPathDebug}/${RelativeDstDirPath})
+			#		set(DstDirPath ${c_ProjectLibDirPathDebug}/${RelativeDstDirPath})
 			#		set(DstFilePath ${DstDirPath}/${FileName})
 			#		if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
 			#			message("Deploying: ${SrcFilePath} ${DstDirPath}")
@@ -169,19 +173,22 @@ if(v_FindPackageBasedIntegration)
 			#	message(FATAL_ERROR "The two lists are not of the same length!")
 			#endif()
 
-			
-			deploy_files(
-				v_ListDeployingSrcFilePathFindPackageBasedDebug
-				v_ListDeployingDstRelativeDirPathFindPackageBasedDebug
-				${ProjectLibDirPathDebug}
-				${c_ProjectInstallingTargetDirPathDebug}/${c_LibDirName}
-			)
-			deploy_files(
-				v_ListDeployingSrcFilePathFindPackageBasedRelease
-				v_ListDeployingDstRelativeDirPathFindPackageBasedRelease
-				${ProjectLibDirPathReleases}
-				${c_ProjectInstallingTargetDirPathRelease}/${c_LibDirName}
-			)
+			if(v_ListDeployingSrcFilePathFindPackageBasedDebug)
+				deploy_files(
+					v_ListDeployingSrcFilePathFindPackageBasedDebug
+					v_ListDeployingDstRelativeDirPathFindPackageBasedDebug
+					${c_ProjectLibDirPathDebug}
+					${c_ProjectInstallingTargetDirPathDebug}/${c_LibDirName}
+				)
+			endif()
+			if(v_ListDeployingSrcFilePathFindPackageBasedRelease)
+				deploy_files(
+					v_ListDeployingSrcFilePathFindPackageBasedRelease
+					v_ListDeployingDstRelativeDirPathFindPackageBasedRelease
+					${ProjectLibDirPathReleases}
+					${c_ProjectInstallingTargetDirPathRelease}/${c_LibDirName}
+				)
+			endif()
 		endif()
 	endif()
 else()
@@ -226,7 +233,7 @@ else()
 			"$<$<CONFIG:Release>:${LibFilePathsReleasePrivate}>"
 		)
 	endif()
-	if(c_ProjectRequiredLibInstallation)
+	if(c_ProjectRequiredBinInstalling)
 		if(WIN32)
 			if(v_LibPlatformArchDirPath)
 				set(BinDirPathDebug ${v_LibPlatformArchDirPath}/Debug/${c_BinDirName})
@@ -236,22 +243,22 @@ else()
 				if(LibFilePathsDebugPrivate)
 					list(GET ListDeployingFilePathDebug 0 Item0)
 					get_filename_component(FileName "${Item0}" NAME)
-					set(FilePathDebug ${ProjectBinDirPathDebug}/${FileName})
+					set(FilePathDebug ${c_ProjectBinDirPathDebug}/${FileName})
 				endif()
 				if(PROJECT_SETUP OR NOT EXISTS "${FilePathDebug}")
-					message("Deploying: ${BinDirPathDebug} ${ProjectBinDirPathDebug}")
-					file(COPY "${BinDirPathDebug}/" DESTINATION "${ProjectBinDirPathDebug}/")
+					message("Deploying: ${BinDirPathDebug} ${c_ProjectBinDirPathDebug}")
+					file(COPY "${BinDirPathDebug}/" DESTINATION "${c_ProjectBinDirPathDebug}/")
 				endif()
 				
 				file(GLOB ListDeployingFilePathRelease "${BinDirPathRelease}/*")
 				if(LibFilePathsReleasePrivate)
 					list(GET ListDeployingFilePathRelease 0 Item0)
 					get_filename_component(FileName "${Item0}" NAME)
-					set(FilePathRelease ${ProjectBinDirPathRelease}/${FileName})
+					set(FilePathRelease ${c_ProjectBinDirPathRelease}/${FileName})
 				endif()
 				if(PROJECT_SETUP OR NOT EXISTS "${FilePathRelease}")
-					message("Deploying: ${BinDirPathRelease} ${ProjectBinDirPathRelease}")
-					file(COPY "${BinDirPathRelease}/" DESTINATION "${ProjectBinDirPathRelease}/")
+					message("Deploying: ${BinDirPathRelease} ${c_ProjectBinDirPathRelease}")
+					file(COPY "${BinDirPathRelease}/" DESTINATION "${c_ProjectBinDirPathRelease}/")
 				endif()
 				
 				install(DIRECTORY "${BinDirPathDebug}/"
@@ -297,9 +304,10 @@ unset(v_LibPlatformArchDirPath)
 unset(v_ListLibIncludeDirPathPrivate)
 unset(v_LibPlatformArchIncludeDirPath)
 
+unset(v_LibVersionFindPackageBased)
 unset(v_PackageRootDirPathFindPackageBased)
 unset(v_FindPackageBasedIntegration)
-unset(v_LibNameFindPackgetBased)
+unset(v_LibNameFindPackgeBased)
 unset(v_ListComponentFindPackgeBased)
 unset(v_ListDeployingBinFilePathNoExtFindPackageBasedDebug)
 unset(v_ListDeployingBinFilePathNoExtFindPackageBasedRelease)
