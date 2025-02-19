@@ -29,7 +29,6 @@ else()
 	#file(REMOVE "${c_VersionHeaderFilePath}")
 	file(REMOVE_RECURSE "${c_VersioningIncludeDirPath}")
 endif()
-message("ddddddd ${c_ProjectVersionPatchCache}, ${c_ProjectVersionPatch}")
 
 set(c_ProjectVersionMajorCache ${c_ProjectVersionMajor} CACHE STRING "Major version number" FORCE)
 set(c_ProjectVersionMinorCache ${c_ProjectVersionMinor} CACHE STRING "Minor version number" FORCE)
