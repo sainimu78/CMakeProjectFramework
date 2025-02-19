@@ -104,3 +104,5 @@ if(NOT IsSetupOrReleaseMode AND EXISTS "${c_ProjectInstalledDirPath}")
     message(STATUS "Clearing install directory: ${c_ProjectInstalledDirPath}")
     file(REMOVE_RECURSE "${c_ProjectInstalledDirPath}")
 endif()
+
+include(${c_RootCMakeProjectFrameworkDirPath}/GenerateVersionHeader.cmake)
