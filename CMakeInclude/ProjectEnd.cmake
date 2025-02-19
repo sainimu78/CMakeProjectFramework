@@ -108,7 +108,7 @@ endif()
 
 set(c_ProjectVersioningDirPath ${c_ProjectPlatformArchDirPath}/Versioning)
 set(c_VersioningIncludeDirPath ${c_ProjectVersioningDirPath}/include)
-set(c_ReleaseVersionInfoFilePath ${${c_ProjectVersioningDirPath}}/Version.txt)
+set(c_ReleaseVersionInfoFilePath ${c_ProjectVersioningDirPath}/VERSION.txt)
 set(c_VersionConfigFilePath ${c_ProjectDirPath}/VersionConfig.cmake)
 set(c_ProjectVersionMajor 0)
 set(c_ProjectVersionMinor 0)
