@@ -4,4 +4,9 @@
 #if(EXISTS "${c_RootTempDirPath}")
 	file(REMOVE_RECURSE "${c_RootTempDirPath}")
 #endif()
+
+if((NOT EXISTS "${c_VersioningIncludeDirPath}") AND (NOT EXISTS "${c_ReleaseVersionInfoFilePath}"))
+	file(REMOVE_RECURSE "${c_ProjectVersioningDirPath}")
+endif()
+
 unset(downloaded_files CACHE)
