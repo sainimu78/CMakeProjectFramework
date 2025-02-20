@@ -108,8 +108,13 @@ endif()
 
 set(c_ProjectVersioningDirPath ${c_ProjectPlatformArchDirPath}/Versioning)
 set(c_VersioningIncludeDirPath ${c_ProjectVersioningDirPath}/include)
-set(c_ReleaseVersionInfoFilePath ${c_ProjectVersioningDirPath}/VERSION.txt)
+set(c_ReleaseNotesFilePath ${c_ProjectVersioningDirPath}/ReleaseNotes.md)
 set(c_VersionConfigFilePath ${c_ProjectDirPath}/VersionConfig.cmake)
+
+if(NOT DEFINED c_ProjectVersionMajorCache)
+	file(REMOVE_RECURSE "${c_ProjectVersioningDirPath}")
+endif()
+
 set(c_ProjectVersionMajor 0)
 set(c_ProjectVersionMinor 0)
 set(c_ProjectVersionPatch 0)
