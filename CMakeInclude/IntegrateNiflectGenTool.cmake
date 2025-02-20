@@ -54,7 +54,7 @@ if(v_ModuleAPIMacroHeaderFilePath)
     list(APPEND ListOptModuleAPIMacroHeader "-amh" "${v_ModuleAPIMacroHeaderFilePath}")
 endif()
 
-set(GeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
+set(GeneratedModulePrivateH ${GenOutputDirPath}/FinishedFlag.txt)
 
 set(DebugIntegration OFF)
 if(DebugIntegration)
