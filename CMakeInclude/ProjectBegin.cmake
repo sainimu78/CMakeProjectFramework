@@ -119,7 +119,7 @@ function(deploy_files src_list dst_list project_lib_dir_path install_target_dir_
             get_filename_component(FileName "${SrcFilePath}" NAME)
             set(DstDirPath ${project_lib_dir_path}/${RelativeDstDirPath})
             set(DstFilePath ${DstDirPath}/${FileName})
-            if(PROJECT_SETUP OR NOT EXISTS "${DstFilePath}")
+            if(c_ProjectPipelineSetup OR NOT EXISTS "${DstFilePath}")
                 message("Deploying: ${SrcFilePath} ${DstDirPath}")
                 file(COPY "${SrcFilePath}" DESTINATION "${DstDirPath}")
             endif()
@@ -155,6 +155,19 @@ function(download_zip_replace_dir_if_not_exists SrcAddrZipFilePath DstDownloaded
         set(${result_var} TRUE PARENT_SCOPE)  # 设置结果为 TRUE
     endif()
 endfunction()
+
+macro(define_enum var default_value description)
+    set(${var} "${default_value}" CACHE STRING "${description}")
+    set_property(CACHE ${var} PROPERTY STRINGS ${ARGN})  # 设置允许的值
+
+    # 将 ARGN 转换为显式命名的列表变量
+    set(allowed_values ${ARGN})
+
+    # 使用 allowed_values 进行验证
+    if(NOT ${var} IN_LIST allowed_values)
+        message(FATAL_ERROR "Invalid value for ${var}: ${${var}}. Allowed values: ${allowed_values}")
+    endif()
+endmacro()
 
 if (WIN32)
 	#避免如 freopen 的 Warning C4996

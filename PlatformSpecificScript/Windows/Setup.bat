@@ -9,7 +9,7 @@ if defined Toolset (
 
 @mkdir %BuildDirPath%
 @cd %BuildDirPath%
-@cmake %ProjectDirPath% -DCMAKE_INSTALL_PREFIX=%InstallPrefix% -DPROJECT_SETUP=ON -DPROJECT_RELEASE=OFF %CMakeToolsetArgs%
+@cmake %ProjectDirPath% -DCMAKE_INSTALL_PREFIX=%InstallPrefix% -DPROJECT_PIPELINE=Setup %CMakeToolsetArgs%
 @if %ERRORLEVEL% neq 0 (
     echo "### cmake generating failed ###"
     pause

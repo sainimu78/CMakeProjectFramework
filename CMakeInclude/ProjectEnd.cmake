@@ -95,7 +95,7 @@ set(c_ProjectTempDirPath ${c_RootTempDirPath}/${ProjectRelativeDirPath}/${c_Proj
 set(c_PlatformReleaseDirPath ${c_StorageDirPath}/Release/${c_ProjectPlatform})
 set(c_ProjectInstalledDirPath ${CMAKE_INSTALL_PREFIX}/${c_ProjectName})
 set(IsSetupOrReleaseMode OFF)
-if(PROJECT_SETUP OR PROJECT_RELEASE)
+if(c_ProjectPipelineSetup OR c_ProjectPipelineRelease)
 	set(IsSetupOrReleaseMode ON)
 endif()
 #if(IsSetupOrReleaseMode OR NOT EXISTS "${CMAKE_CACHEFILE_DIR}")

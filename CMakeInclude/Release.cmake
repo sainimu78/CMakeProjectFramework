@@ -1,4 +1,4 @@
-if(PROJECT_RELEASE)
+if(c_ProjectPipelineRelease)
 	set(ZipFileName ${c_ProjectName}.zip)
 	set(ZipFilePath ${CMAKE_INSTALL_PREFIX}/${ZipFileName})
 	if(EXISTS "${c_ProjectInstalledDirPath}")

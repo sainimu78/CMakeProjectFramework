@@ -8,7 +8,7 @@ if defined Toolset (
 )
 
 cd %BuildDirPath%
-cmake %ProjectDirPath% -DCMAKE_INSTALL_PREFIX=%InstallPrefix% -DPROJECT_SETUP=OFF -DPROJECT_RELEASE=ON %CMakeToolsetArgs%
+cmake %ProjectDirPath% -DCMAKE_INSTALL_PREFIX=%InstallPrefix% -DPROJECT_PIPELINE=Release %CMakeToolsetArgs%
 if %ERRORLEVEL% neq 0 (
     echo "### cmake generating failed ###"
     pause

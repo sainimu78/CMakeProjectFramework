@@ -1,4 +1,4 @@
-#if(PROJECT_SETUP OR PROJECT_RELEASE)
+#if(c_ProjectPipelineSetup OR c_ProjectPipelineRelease)
 #	
 #endif()
 #if(EXISTS "${c_RootTempDirPath}")
