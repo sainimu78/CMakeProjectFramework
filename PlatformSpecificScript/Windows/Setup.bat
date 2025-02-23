@@ -3,7 +3,7 @@
 @set InstallPrefix=Installed
 @set OldDirPath=%cd%
 
-if defined Toolset (
+@if defined Toolset (
     set CMakeToolsetArgs=-T %Toolset%
 )
 
