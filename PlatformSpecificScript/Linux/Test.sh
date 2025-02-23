@@ -49,7 +49,6 @@ if [ $BuildOk -ne 0 ]; then
 		ctest . --output-on-failure -j 1024
 		if [ $? -ne 0 ]; then
 			echo "CMake test failed for Release build."
-		else
 		fi
 	fi
 fi
