@@ -184,12 +184,14 @@ macro(ngt_target_link_libraries TargetName Scope)
 endmacro()
 
 function(cpf_include cmakeFilePath)
-	# 与 builtin include 不同之处
-	# 1. 可检查文件是否存在, 不存在则不 include, 避免报错
-	# 2. 使 include 中定义的变量只在在 function 作用域内有有效
-	if(EXISTS "${cmakeFilePath}")
-		include("${cmakeFilePath}")
-	endif()
+	# 与 builtin include 不同之处在于使 include 中定义的变量只在在 function 作用域内有有效
+	include("${cmakeFilePath}")
+endfunction()
+
+function(cpf_include_install cmakeFilePath)
+	# 作用同 cpf_include, 带默认 Install, 用于接入 add_library( SHARED ) 的 target
+	include("${cmakeFilePath}")
+	include(${c_ProjectDirPath}/Install.cmake)
 endfunction()
 
 if (WIN32)
