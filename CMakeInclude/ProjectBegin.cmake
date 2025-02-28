@@ -183,6 +183,15 @@ macro(ngt_target_link_libraries TargetName Scope)
 	endforeach()
 endmacro()
 
+function(cpf_include cmakeFilePath)
+	# 与 builtin include 不同之处
+	# 1. 可检查文件是否存在, 不存在则不 include, 避免报错
+	# 2. 使 include 中定义的变量只在在 function 作用域内有有效
+	if(EXISTS "${cmakeFilePath}")
+		include("${cmakeFilePath}")
+	endif()
+endfunction()
+
 if (WIN32)
 	#避免如 freopen 的 Warning C4996
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
