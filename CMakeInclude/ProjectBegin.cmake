@@ -194,6 +194,17 @@ function(cpf_include_install cmakeFilePath)
 	include(${c_ProjectDirPath}/Install.cmake)
 endfunction()
 
+function(is_target_shared TARGET RESULT_VAR)
+    # 获取目标的类型
+    get_target_property(target_type ${TARGET} TYPE)
+    # 判断是否为 SHARED_LIBRARY
+    if(target_type STREQUAL "SHARED_LIBRARY")
+        set(${RESULT_VAR} TRUE PARENT_SCOPE)
+    else()
+        set(${RESULT_VAR} FALSE PARENT_SCOPE)
+    endif()
+endfunction()
+
 if (WIN32)
 	#避免如 freopen 的 Warning C4996
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)

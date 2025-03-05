@@ -71,13 +71,30 @@ foreach(It IN LISTS v_ListAccessorSettingHeaderFilePath)
 endforeach()
 
 set(ListOptModuleAPIMacro "")
-if(v_ModuleAPIMacro)
-    list(APPEND ListOptModuleAPIMacro "-am" "${v_ModuleAPIMacro}")
-endif()
-
 set(ListOptModuleAPIMacroHeader "")
-if(v_ModuleAPIMacroHeaderFilePath)
-    list(APPEND ListOptModuleAPIMacroHeader "-amh" "${v_ModuleAPIMacroHeaderFilePath}")
+set(OptToGenApiModuleHeader "")
+set(ToGenApiModuleHeader ${v_ToGenApiModuleHeader})
+if((NOT ToGenApiModuleHeader) AND (NOT DEFINED v_ModuleAPIMacro))
+	is_target_shared(${ModuleName} ToGenApiModuleHeader)
+endif()
+if(ToGenApiModuleHeader)
+	if(v_ModuleAPIMacro OR v_ModuleAPIMacroHeaderFilePath)
+		message(FATAL_ERROR "v_ModuleAPIMacro and v_ModuleAPIMacroHeaderFilePath can be provided only when ToGenApiModuleHeader is FALSE")
+	endif()
+	set(OptToGenApiModuleHeader "-gam")
+	string(TOUPPER "${ModuleName}" ApiMacroPrefix)
+	target_compile_definitions(${ModuleName} PRIVATE -D_${ApiMacroPrefix}_EXPORTS)
+else()
+	if(v_ModuleAPIMacro)
+		if(ToGenApiModuleHeader)
+			message(FATAL_ERROR "ToGenApiModuleHeader can be TRUE only when v_ModuleAPIMacro is not provied")
+		endif()
+		list(APPEND ListOptModuleAPIMacro "-am" "${v_ModuleAPIMacro}")
+	endif()
+
+	if(v_ModuleAPIMacroHeaderFilePath)
+		list(APPEND ListOptModuleAPIMacroHeader "-amh" "${v_ModuleAPIMacroHeaderFilePath}")
+	endif()
 endif()
 
 set(GeneratedModulePrivateH ${GenOutputDirPath}/FinishedFlag.txt)
@@ -123,17 +140,18 @@ endif()
 add_custom_command(
     OUTPUT "${GeneratedModulePrivateH}"
     COMMAND ${ListOptCmdCallingGenTool} "${GenToolExeFilePath}" 
-            -n ${ModuleName} 
-            ${ListOptModuleHeaders}
-			${ListOptModulePrecompileHeaders}
-            ${ListOptModuleAPIMacro} 
-            ${ListOptModuleAPIMacroHeader}
-            ${ListOptAccessorSettingHeaders} 
-            -t "${NiflectRootPath}/include" 
-            ${ListOptModuleIncludeDirPath} 
-            -g "${GenOutputDirPath}"
-			-gbt 
-			${ListOptToolOption} 
+		-n ${ModuleName} 
+		${ListOptModuleHeaders}
+		${ListOptModulePrecompileHeaders}
+		${ListOptModuleAPIMacro} 
+		${ListOptModuleAPIMacroHeader}
+		${OptToGenApiModuleHeader}
+		${ListOptAccessorSettingHeaders} 
+		-t "${NiflectRootPath}/include" 
+		${ListOptModuleIncludeDirPath} 
+		-g "${GenOutputDirPath}"
+		-gbt 
+		${ListOptToolOption} 
     DEPENDS ${ListCustomTargetDependsFilePath}
     COMMENT "${v_IntegratedToolName} of ${ModuleName}: Starting"
 )
@@ -153,6 +171,7 @@ unset(v_ListModuleIncludeDirPath)
 #begin, Optional
 unset(v_ModuleAPIMacro)
 unset(v_ModuleAPIMacroHeaderFilePath)
+unset(v_ToGenApiModuleHeader)
 unset(v_ListModuleHeaderFilePath)
 unset(v_ListModulePrecompileHeaderFilePath)
 unset(v_EnabledDebuggerAttaching)#清理标志, 避免影响其它模块
