@@ -36,8 +36,32 @@ set(ListOptModuleHeaders "")
 foreach(It IN LISTS v_ListModuleHeaderFilePath)
     list(APPEND ListOptModuleHeaders "-h" "${It}")
 endforeach()
+
+set(ListPrecompileHeaderFilePathPublicPrivate "")
+list(APPEND ListPrecompileHeaderFilePathPublicPrivate ${v_ListModulePrecompileHeaderFilePath})
+set(ListPublicPrivate "")
+get_target_property(ListPublicPrivate ${ModuleName} PRECOMPILE_HEADERS)
+if(ListPublicPrivate)
+	list(APPEND ListPrecompileHeaderFilePathPublicPrivate ${ListPublicPrivate})
+endif()
+set(ListOptModulePrecompileHeaders "")
+foreach(It IN LISTS ListPrecompileHeaderFilePathPublicPrivate)
+    list(APPEND ListOptModulePrecompileHeaders "-ph" "${It}")
+endforeach()
+
+set(ListCustomTargetDependsFilePath "")
+list(APPEND ListCustomTargetDependsFilePath ${v_ListModuleHeaderFilePath})
+list(APPEND ListCustomTargetDependsFilePath ${ListPrecompileHeaderFilePathPublicPrivate})
+
+set(ListIncludeDirPathPublicPrivate "")
+list(APPEND ListIncludeDirPathPublicPrivate ${v_ListModuleIncludeDirPath})
+set(ListPublicPrivate "")
+get_target_property(ListPublicPrivate ${ModuleName} INCLUDE_DIRECTORIES)
+if(ListPublicPrivate)
+	list(APPEND ListIncludeDirPathPublicPrivate ${ListPublicPrivate})
+endif()
 set(ListOptModuleIncludeDirPath "")
-foreach(It IN LISTS v_ListModuleIncludeDirPath)
+foreach(It IN LISTS ListIncludeDirPathPublicPrivate)
 	list(APPEND ListOptModuleIncludeDirPath "-I" "${It}")
 endforeach()
 
@@ -45,21 +69,26 @@ set(ListOptAccessorSettingHeaders "")
 foreach(It IN LISTS v_ListAccessorSettingHeaderFilePath)
 	list(APPEND ListOptAccessorSettingHeaders "-a" "${It}")
 endforeach()
+
 set(ListOptModuleAPIMacro "")
 if(v_ModuleAPIMacro)
     list(APPEND ListOptModuleAPIMacro "-am" "${v_ModuleAPIMacro}")
 endif()
+
 set(ListOptModuleAPIMacroHeader "")
 if(v_ModuleAPIMacroHeaderFilePath)
     list(APPEND ListOptModuleAPIMacroHeader "-amh" "${v_ModuleAPIMacroHeaderFilePath}")
 endif()
 
-set(GeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
+set(GeneratedModulePrivateH ${GenOutputDirPath}/FinishedFlag.txt)
 
 set(DebugIntegration OFF)
 if(DebugIntegration)
 	message(${ModuleName})
 	foreach(It IN LISTS ListOptModuleHeaders)
+		message(${It})
+	endforeach()
+	foreach(It IN LISTS ListOptModulePrecompileHeaders)
 		message(${It})
 	endforeach()
 	foreach(It IN LISTS ListOptModuleAPIMacro)
@@ -96,6 +125,7 @@ add_custom_command(
     COMMAND ${ListOptCmdCallingGenTool} "${GenToolExeFilePath}" 
             -n ${ModuleName} 
             ${ListOptModuleHeaders}
+			${ListOptModulePrecompileHeaders}
             ${ListOptModuleAPIMacro} 
             ${ListOptModuleAPIMacroHeader}
             ${ListOptAccessorSettingHeaders} 
@@ -104,7 +134,7 @@ add_custom_command(
             -g "${GenOutputDirPath}"
 			-gbt 
 			${ListOptToolOption} 
-    DEPENDS ${v_ListModuleHeaderFilePath}
+    DEPENDS ${ListCustomTargetDependsFilePath}
     COMMENT "${v_IntegratedToolName} of ${ModuleName}: Starting"
 )
 
@@ -124,6 +154,7 @@ unset(v_ListModuleIncludeDirPath)
 unset(v_ModuleAPIMacro)
 unset(v_ModuleAPIMacroHeaderFilePath)
 unset(v_ListModuleHeaderFilePath)
+unset(v_ListModulePrecompileHeaderFilePath)
 unset(v_EnabledDebuggerAttaching)#清理标志, 避免影响其它模块
 unset(v_ListToolOption)
 #endif

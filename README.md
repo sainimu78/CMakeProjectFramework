@@ -14,3 +14,22 @@ A cmake project framework based on HFS local storage
 - Generate, Build, Install, Release by using the platform specific scripts in `PlatformSpecificScript`
   - Refer to `git@github.com:sainimu78/Niflect.git`, `Niflect\Build\Niflect\Windows\Build.bat`
 
+## Naming Convention
+
+A CMake Variable that
+
+- Starts with `c_`: Global constant
+
+  - e.g., `set(c_ProjectDirPath ${CMAKE_CURRENT_SOURCE_DIR})`
+
+- Starts with `v_`: Local variable specified by user before an invocation of `include`-inlining-style function
+
+  - e.g., 
+
+    ```cmake
+    set(v_ImportedLibName libclang)
+    ...
+    include(${c_RootCMakeProjectFrameworkDirPath}/ImportLibDownloaded.cmake)
+    ```
+
+    

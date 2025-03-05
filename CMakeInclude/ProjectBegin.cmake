@@ -108,6 +108,33 @@ function(download_zip_replace_dir SrcAddrZipFilePath DstDownloadedFilePath DstUn
 	endif()
 endfunction()
 
+function(deploy_files src_list dst_list project_lib_dir_path install_target_dir_path)
+    list(LENGTH ${src_list} Len0)
+    list(LENGTH ${dst_list} Len1)
+    if(Len0 EQUAL Len1)
+        math(EXPR Len0MinusOne "${Len0} - 1")
+        foreach(Idx RANGE 0 ${Len0MinusOne})
+            list(GET ${src_list} ${Idx} SrcFilePath)
+            list(GET ${dst_list} ${Idx} RelativeDstDirPath)
+            get_filename_component(FileName "${SrcFilePath}" NAME)
+            set(DstDirPath ${project_lib_dir_path}/${RelativeDstDirPath})
+            set(DstFilePath ${DstDirPath}/${FileName})
+            if(c_ProjectPipelineSetup OR NOT EXISTS "${DstFilePath}")
+                message("Deploying: ${SrcFilePath} ${DstDirPath}")
+                file(COPY "${SrcFilePath}" DESTINATION "${DstDirPath}")
+            endif()
+            set(DstInstallingDirPath ${install_target_dir_path})
+            if(RelativeDstDirPath)
+                set(DstInstallingDirPath ${DstInstallingDirPath}/${RelativeDstDirPath})
+            endif()
+            install(FILES "${SrcFilePath}"
+                DESTINATION "${DstInstallingDirPath}/")
+        endforeach()
+    else()
+        message(FATAL_ERROR "The two lists are not of the same length!")
+    endif()
+endfunction()
+
 # 声明一个用于跟踪已下载文件的变量，使用 CACHE 将其持久化
 set(downloaded_files "" CACHE STRING "List of downloaded files")
 
@@ -127,6 +154,44 @@ function(download_zip_replace_dir_if_not_exists SrcAddrZipFilePath DstDownloaded
         set(downloaded_files "${downloaded_files}" CACHE STRING "List of downloaded files" FORCE)
         set(${result_var} TRUE PARENT_SCOPE)  # 设置结果为 TRUE
     endif()
+endfunction()
+
+macro(define_enum var default_value description)
+    set(${var} "${default_value}" CACHE STRING "${description}")
+    set_property(CACHE ${var} PROPERTY STRINGS ${ARGN})  # 设置允许的值
+
+    # 将 ARGN 转换为显式命名的列表变量
+    set(allowed_values ${ARGN})
+
+    # 使用 allowed_values 进行验证
+    if(NOT ${var} IN_LIST allowed_values)
+        message(FATAL_ERROR "Invalid value for ${var}: ${${var}}. Allowed values: ${allowed_values}")
+    endif()
+endmacro()
+
+macro(ngt_target_link_libraries TargetName Scope)
+	foreach(Arg ${ARGN})
+		target_link_libraries(${TargetName} ${Scope} ${Arg})
+		get_target_property(ListIncludeDirPathPublic ${Arg} INTERFACE_INCLUDE_DIRECTORIES)
+		if(ListIncludeDirPathPublic)
+			list(APPEND v_ListModuleIncludeDirPath ${ListIncludeDirPathPublic})
+		endif()
+		get_target_property(ListPrecompileHeaderFilePathPublic ${Arg} INTERFACE_PRECOMPILE_HEADERS)
+		if(ListPrecompileHeaderFilePathPublic)
+			list(APPEND v_ListModulePrecompileHeaderFilePath ${ListPrecompileHeaderFilePathPublic})
+		endif()
+	endforeach()
+endmacro()
+
+function(cpf_include cmakeFilePath)
+	# 与 builtin include 不同之处在于使 include 中定义的变量只在在 function 作用域内有有效
+	include("${cmakeFilePath}")
+endfunction()
+
+function(cpf_include_install cmakeFilePath)
+	# 作用同 cpf_include, 带默认 Install, 用于接入 add_library( SHARED ) 的 target
+	include("${cmakeFilePath}")
+	include(${c_ProjectDirPath}/Install.cmake)
 endfunction()
 
 if (WIN32)
