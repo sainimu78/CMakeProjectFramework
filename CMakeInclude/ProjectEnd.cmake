@@ -86,7 +86,7 @@ install(FILES "${c_RootDirPath}/LICENSE.md" DESTINATION ${c_ProjectName})
 
 include(${c_RootCMakeProjectFrameworkDirPath}/Option.cmake)
 
-file(RELATIVE_PATH ProjectRelativeDirPath "${c_RootProjectDirPath}" "${c_ProjectDirPath}")
+file(RELATIVE_PATH ProjectRelativeDirPath "${c_RootDirPath}" "${c_ProjectDirPath}")
 set(c_RootTempDirPath ${c_RootDirPath}/TempForSetupOrRelease)
 set(c_ProjectTempDirPath ${c_RootTempDirPath}/${ProjectRelativeDirPath}/${c_ProjectPlatform})
 
