@@ -30,11 +30,6 @@ set(GenSourcePublic ${GenSourcePrivate}/include)
 #list(APPEND SrcAll ${GeneratedSrc})
 #end
 
-target_include_directories(${ModuleName}
-	PRIVATE ${GenSourcePrivate}
-	PUBLIC ${GenSourcePublic}
-)
-
 set(ListOptModuleHeaders "")
 foreach(It IN LISTS v_ListModuleHeaderFilePath)
     list(APPEND ListOptModuleHeaders "-h" "${It}")
@@ -99,6 +94,11 @@ else()
 		list(APPEND ListOptModuleAPIMacroHeader "-amh" "${v_ModuleAPIMacroHeaderFilePath}")
 	endif()
 endif()
+
+target_include_directories(${ModuleName}
+	PRIVATE ${GenSourcePrivate}
+	PUBLIC ${GenSourcePublic}
+)
 
 set(GeneratedModulePrivateH ${GenOutputDirPath}/FinishedFlag.txt)
 
