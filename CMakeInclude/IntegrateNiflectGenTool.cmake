@@ -14,6 +14,9 @@ set(ToolExeName ${v_IntegratedToolName}${c_ExecutableFileExt})
 set(GenToolExeFilePath ${v_NiflectGenToolBinDirPath}/${ToolExeName})
 
 set(NiflectRootPath ${c_RootThirdPartyDirPath}/Niflect/Niflect)
+if(v_NiflectRootPath)
+	set(NiflectRootPath ${v_NiflectRootPath})
+endif()
 if(NOT EXISTS "${NiflectRootPath}")
 	message(FATAL_ERROR "Not found: ${NiflectRootPath}")
 endif()
@@ -156,10 +159,13 @@ add_custom_command(
     COMMENT "${v_IntegratedToolName} of ${ModuleName}: Starting"
 )
 
-set(GenToolTargetName ${v_IntegratedToolName}_${ModuleName})
-add_custom_target(${GenToolTargetName} DEPENDS "${GeneratedModulePrivateH}")
-set_target_properties(${GenToolTargetName} PROPERTIES FOLDER "AutoGen")
-add_dependencies(${ModuleName} ${GenToolTargetName})
+set(IntegratedTargetName ${v_IntegratedToolName}_${ModuleName})
+add_custom_target(${IntegratedTargetName} DEPENDS "${GeneratedModulePrivateH}")
+set_target_properties(${IntegratedTargetName} PROPERTIES FOLDER "AutoGen")
+add_dependencies(${ModuleName} ${IntegratedTargetName})
+if(v_ListIntegratedToolDependency)
+	add_dependencies(${IntegratedTargetName} ${v_ListIntegratedToolDependency})
+endif()
 
 #begin, Required
 unset(v_IntegratedToolName)
@@ -174,6 +180,8 @@ unset(v_ModuleAPIMacroHeaderFilePath)
 unset(v_ToGenApiModuleHeader)
 unset(v_ListModuleHeaderFilePath)
 unset(v_ListModulePrecompileHeaderFilePath)
-unset(v_EnabledDebuggerAttaching)#清理标志, 避免影响其它模块
+unset(v_NiflectRootPath)
+unset(v_ListIntegratedToolDependency)
+unset(v_EnabledDebuggerAttaching)
 unset(v_ListToolOption)
 #endif
