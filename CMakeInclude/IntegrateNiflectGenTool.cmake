@@ -20,6 +20,7 @@ endif()
 if(NOT EXISTS "${NiflectRootPath}")
 	message(FATAL_ERROR "Not found: ${NiflectRootPath}")
 endif()
+set(NiflectIncludeDirPath ${NiflectRootPath}/include)
 
 set(GenOutputDirPath ${c_RootGeneratedDirPath}/${ModuleName})
 set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
@@ -63,8 +64,13 @@ foreach(It IN LISTS ListIncludeDirPathPublicPrivate)
 	list(APPEND ListOptModuleIncludeDirPath "-I" "${It}")
 endforeach()
 
+if(v_ListAccessorSettingHeaderFilePath)
+	set(ListAccessorSettingHeaderFilePath ${v_ListAccessorSettingHeaderFilePath})
+else()
+	list(APPEND ListAccessorSettingHeaderFilePath ${NiflectIncludeDirPath}/Niflect/Default/DefaultAccessorSetting.h)
+endif()
 set(ListOptAccessorSettingHeaders "")
-foreach(It IN LISTS v_ListAccessorSettingHeaderFilePath)
+foreach(It IN LISTS ListAccessorSettingHeaderFilePath)
 	list(APPEND ListOptAccessorSettingHeaders "-a" "${It}")
 endforeach()
 
@@ -120,7 +126,7 @@ if(DebugIntegration)
 	foreach(It IN LISTS ListOptAccessorSettingHeaders)
 		message(${It})
 	endforeach()
-	message("${NiflectRootPath}/include")
+	message("${NiflectIncludeDirPath}")
 	foreach(It IN LISTS ListOptModuleIncludeDirPath)
 		message(${It})
 	endforeach()
@@ -150,7 +156,7 @@ add_custom_command(
 		${ListOptModuleAPIMacroHeader}
 		${OptToGenApiModuleHeader}
 		${ListOptAccessorSettingHeaders} 
-		-t "${NiflectRootPath}/include" 
+		-t "${NiflectIncludeDirPath}" 
 		${ListOptModuleIncludeDirPath} 
 		-g "${GenOutputDirPath}"
 		-gbt 
@@ -170,7 +176,6 @@ endif()
 #begin, Required
 unset(v_IntegratedToolName)
 unset(v_NiflectGenToolBinDirPath)
-unset(v_ListAccessorSettingHeaderFilePath)
 unset(v_ListModuleIncludeDirPath)
 #end
 
@@ -180,6 +185,7 @@ unset(v_ModuleAPIMacroHeaderFilePath)
 unset(v_ToGenApiModuleHeader)
 unset(v_ListModuleHeaderFilePath)
 unset(v_ListModulePrecompileHeaderFilePath)
+unset(v_ListAccessorSettingHeaderFilePath)
 unset(v_NiflectRootPath)
 unset(v_ListIntegratedToolDependency)
 unset(v_EnabledDebuggerAttaching)
