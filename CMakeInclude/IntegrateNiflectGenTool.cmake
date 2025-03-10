@@ -22,7 +22,7 @@ if(NOT EXISTS "${NiflectRootPath}")
 endif()
 set(NiflectIncludeDirPath ${NiflectRootPath}/include)
 
-set(GenOutputDirPath ${c_RootGeneratedDirPath}/${ModuleName})
+set(GenOutputDirPath ${c_RootGeneratedDirPath}/${c_ProjectRelativeDirPath}/${ModuleName})
 set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
 set(GenSourcePublic ${GenSourcePrivate}/include)
 #beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
