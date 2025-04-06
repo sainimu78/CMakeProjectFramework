@@ -31,6 +31,11 @@ set(GenSourcePublic ${GenSourcePrivate}/include)
 #list(APPEND SrcAll ${GeneratedSrc})
 #end
 
+set(ListOptMacroTagHeaderFilePath "")
+if (v_MacroTagHeaderFilePath)
+	list(APPEND ListOptMacroTagHeaderFilePath "-m" "${v_MacroTagHeaderFilePath}")
+endif()
+
 set(ListOptModuleHeaders "")
 foreach(It IN LISTS v_ListModuleHeaderFilePath)
     list(APPEND ListOptModuleHeaders "-h" "${It}")
@@ -156,6 +161,7 @@ add_custom_command(
 		${ListOptModuleAPIMacroHeader}
 		${OptToGenApiModuleHeader}
 		${ListOptAccessorSettingHeaders} 
+		${ListOptMacroTagHeaderFilePath}
 		-t "${NiflectIncludeDirPath}" 
 		${ListOptModuleIncludeDirPath} 
 		-g "${GenOutputDirPath}"
@@ -183,6 +189,7 @@ unset(v_ListModuleIncludeDirPath)
 unset(v_ModuleAPIMacro)
 unset(v_ModuleAPIMacroHeaderFilePath)
 unset(v_ToGenApiModuleHeader)
+unset(v_MacroTagHeaderFilePath)
 unset(v_ListModuleHeaderFilePath)
 unset(v_ListModulePrecompileHeaderFilePath)
 unset(v_ListAccessorSettingHeaderFilePath)
