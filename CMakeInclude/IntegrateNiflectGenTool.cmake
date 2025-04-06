@@ -159,7 +159,7 @@ add_custom_command(
 		-t "${NiflectIncludeDirPath}" 
 		${ListOptModuleIncludeDirPath} 
 		-g "${GenOutputDirPath}"
-		-gbt 
+		-gat 
 		${ListOptToolOption} 
     DEPENDS ${ListCustomTargetDependsFilePath}
     COMMENT "${v_IntegratedToolName} of ${ModuleName}: Starting"
