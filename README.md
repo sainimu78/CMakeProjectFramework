@@ -1,6 +1,6 @@
 # CMakeProjectFramework
 
-A cmake project framework based on HFS local storage
+A cmake project framework based on HFS local storage.
 
 ## Basic Workflow
 
