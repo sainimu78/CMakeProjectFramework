@@ -1,6 +1,4 @@
 set(DstDownloadedFilePath ${v_ImportedLibRootDirPath}/${v_ZipFileName})
 if(c_ProjectPipelineSetup OR NOT EXISTS "${v_UnzippedDirPath}")
 	download_zip_replace_dir_if_not_exists(${v_SrcAddrZipFilePath} ${DstDownloadedFilePath} ${v_UnzippedDirPath} IsDownloaded)
-elseif(EXISTS "${v_UnzippedDirPath}" AND NOT EXISTS "${v_LibPlatformArchDirPath}")
-	unzip_and_delete($${DstDownloadedFilePath} ${v_UnzippedDirPath})
 endif()
