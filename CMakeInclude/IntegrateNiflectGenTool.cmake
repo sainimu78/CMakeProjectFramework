@@ -138,12 +138,16 @@ if(DebugIntegration)
 endif()
 
 #在模块 cmake 中, 如 Wishing\Project\TestEditorCLI\TestEngine\CMakeLists.txt
-#定义变量 set(v_EnabledDebuggerAttaching ON) 即可启用可附加进程的调试模式
+#定义变量 set(v_EnabledDebuggerAttaching ON) 启用可附加进程的调试模式
+#定义变量 set(v_EnabledDebugParsingDiagnostics ON) 启用解析诊断信息, 遇错误则生成失败
 set(ListOptToolOption ${v_ListToolOption})
 set(ListOptCmdCallingGenTool "")
 if(v_EnabledDebuggerAttaching)
 	list(APPEND ListOptCmdCallingGenTool cmd.exe /C start)
 	list(APPEND ListOptToolOption "-debuggerattaching")
+endif()
+if(v_EnabledDebugParsingDiagnostics)
+	list(APPEND ListOptToolOption "-debugparsingdiagnostics")
 endif()
 if(WIN32)
 else()
@@ -196,5 +200,6 @@ unset(v_ListAccessorSettingHeaderFilePath)
 unset(v_NiflectRootPath)
 unset(v_ListIntegratedToolDependency)
 unset(v_EnabledDebuggerAttaching)
+unset(v_EnabledDebugParsingDiagnostics)
 unset(v_ListToolOption)
 #endif
