@@ -89,8 +89,6 @@ if(c_StorageHost)
 			set(ENV{https_proxy} "http://${c_StorageHost}:${c_VpnPort}")
 		endif()
 	endif()
-else()
-	message(FATAL_ERROR "set(c_StorageHost 192.168.x.x) is not defined in ${c_StorageConfigFilePath}")
 endif()
 
 FUNCTION(create_source_group relativeSourcePath)
