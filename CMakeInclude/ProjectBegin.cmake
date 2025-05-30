@@ -87,7 +87,7 @@ else()
 	set(c_StorageHost ${DefaultStorageHost})
 endif()
 
-if((NOT IsHostReachable) AND IsStorageHostDefinedInConfig)#新增定义 c_StorageHost 后才需要设置代理
+if((NOT c_IsLocalStorageReachable) AND IsStorageHostDefinedInConfig)#新增定义 c_StorageHost 后才需要设置代理
 	set(c_VpnPort 1080)
 	if(c_VpnPort)
 		set(ENV{http_proxy} "http://${c_StorageHost}:${c_VpnPort}")
