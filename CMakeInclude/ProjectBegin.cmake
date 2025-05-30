@@ -82,7 +82,7 @@ if(c_StorageHost)
 		set(c_IsLocalStorageReachable FALSE)
 	endif()
 
-	if(NOT c_IsLocalStorageReachable)
+	if(c_IsLocalStorageReachable)
 		set(c_VpnPort 1080)
 		if(c_VpnPort)
 			set(ENV{http_proxy} "http://${c_StorageHost}:${c_VpnPort}")
