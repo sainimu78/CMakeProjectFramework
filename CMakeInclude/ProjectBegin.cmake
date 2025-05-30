@@ -25,32 +25,56 @@ endif()
 include(${c_StorageConfigFilePath})
 
 function(check_host_reachable host result_var)
+    # 默认设置为不可达
+    set(reachable FALSE)
+    
     if(WIN32)
-        # Windows: 发送 1 个包，超时 500ms
+        # Windows 方案：使用 PowerShell 的 Test-Connection
         execute_process(
-            COMMAND ping -n 1 -w 500 ${host}
-            RESULT_VARIABLE ping_result
+            COMMAND powershell -Command 
+                "if (Test-Connection -ComputerName '${host}' -Count 1 -Quiet -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }"
+            RESULT_VARIABLE result
             OUTPUT_QUIET
             ERROR_QUIET
         )
+        
+        if(result EQUAL 0)
+            set(reachable TRUE)
+        endif()
+        
     else()
-        # Linux/macOS: 发送 1 个包，超时 1 秒
+        # Linux/macOS 方案：使用 ping + 输出分析
         execute_process(
             COMMAND ping -c 1 -W 1 ${host}
-            RESULT_VARIABLE ping_result
-            OUTPUT_QUIET
-            ERROR_QUIET
+            RESULT_VARIABLE result
+            OUTPUT_VARIABLE output
+            ERROR_VARIABLE error
         )
+        
+        # 分析输出结果
+        if(result EQUAL 0)
+            # 检查是否实际收到回复
+            if(output MATCHES ".*[1-9][0-9]* bytes from.*")
+                set(reachable TRUE)
+            endif()
+        endif()
     endif()
     
-    # 返回检测结果 (0 表示成功)
-    set(${result_var} $<BOOL:$<EQUAL:${ping_result},0>> PARENT_SCOPE)
+    # 设置返回结果
+    set(${result_var} ${reachable} PARENT_SCOPE)
 endfunction()
 
 set(c_IsLocalStorageReachable TRUE)#新增定义 c_StorageHost 前的版本仅使用本地存储流程
 if(c_StorageHost)
 	message("Checking local storage ...")
-	check_host_reachable(${c_StorageHost} IsHostReachable)
+	#begin, 基于网络的检查执行太慢, 且 Windows 下依赖 PowerShell, 应考虑换方法, 因此不启用
+	#check_host_reachable(${c_StorageHost} IsHostReachable)
+	#暂通过直接检查发布用的本地目录存在作依据
+	set(IsHostReachable FALSE)
+	if(EXISTS ${c_StorageDirPath})
+		set(IsHostReachable TRUE)
+	endif()
+	#end
 	if(IsHostReachable)
 		message("Local storage is reachable")
 	else()
