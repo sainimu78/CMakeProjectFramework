@@ -65,7 +65,9 @@ function(check_host_reachable host result_var)
 endfunction()
 
 set(c_IsLocalStorageReachable TRUE)#新增定义 c_StorageHost 前的版本仅使用本地存储流程
+set(IsStorageHostDefinedInConfig FALSE)
 if(c_StorageHost)
+	set(IsStorageHostDefinedInConfig TRUE)
 	message("Checking local storage ...")
 	#begin, 基于网络的检查执行太慢, 且 Windows 下依赖 PowerShell, 应考虑换方法, 因此不启用
 	#check_host_reachable(${c_StorageHost} IsHostReachable)
@@ -85,10 +87,12 @@ else()
 	set(c_StorageHost ${DefaultStorageHost})
 endif()
 
-set(c_VpnPort 1080)
-if(c_VpnPort)
-	set(ENV{http_proxy} "http://${c_StorageHost}:${c_VpnPort}")
-	set(ENV{https_proxy} "http://${c_StorageHost}:${c_VpnPort}")
+if((NOT IsHostReachable) AND IsStorageHostDefinedInConfig)#新增定义 c_StorageHost 后才需要设置代理
+	set(c_VpnPort 1080)
+	if(c_VpnPort)
+		set(ENV{http_proxy} "http://${c_StorageHost}:${c_VpnPort}")
+		set(ENV{https_proxy} "http://${c_StorageHost}:${c_VpnPort}")
+	endif()
 endif()
 
 FUNCTION(create_source_group relativeSourcePath)
