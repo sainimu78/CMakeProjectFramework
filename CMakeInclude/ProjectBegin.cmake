@@ -1,12 +1,16 @@
 set(c_StorageConfigFilePath ${c_RootProjectDirPath}/StorageConfig.cmake)
 #file(RELATIVE_PATH StorageConfigRelativeToRootFilePath ${c_RootDirPath} ${c_StorageConfigFilePath})
 set(c_StorageConfigDownloadingFailedTips "Failed to download the file, possibly due to incorrect storage config, see: ${c_StorageConfigFilePath}")
+set(DefaultStorageHost 192.168.31.233)
 if(NOT EXISTS "${c_StorageConfigFilePath}")
 	# VPN: http://172.31.222.172/
 	# WLAN: http://192.168.31.233/
-	set(VarStorageIPAddress http://WishingContributor:1@192.168.31.233/sainimu78_Storage)
+	#set(VarStorageIPAddress http://WishingContributor:1@192.168.31.233/sainimu78_Storage)
+	set(VarStorageHfsAddr "http://WishingContributor:1@\$\{c_StorageHost\}/sainimu78_Storage")
 	set(FileContent
-"set(c_StorageAddrPath \"${VarStorageIPAddress}\")
+"set(c_StorageHost \"${DefaultStorageHost}\")
+
+set(c_StorageAddrPath \"${VarStorageHfsAddr}\")
 if(WIN32)
 	set(c_StorageDirPath \"F:/sainimu78_Storage\")
 else()
@@ -19,6 +23,49 @@ endif()
 endif()
 
 include(${c_StorageConfigFilePath})
+
+function(check_host_reachable host result_var)
+    if(WIN32)
+        # Windows: 发送 1 个包，超时 500ms
+        execute_process(
+            COMMAND ping -n 1 -w 500 ${host}
+            RESULT_VARIABLE ping_result
+            OUTPUT_QUIET
+            ERROR_QUIET
+        )
+    else()
+        # Linux/macOS: 发送 1 个包，超时 1 秒
+        execute_process(
+            COMMAND ping -c 1 -W 1 ${host}
+            RESULT_VARIABLE ping_result
+            OUTPUT_QUIET
+            ERROR_QUIET
+        )
+    endif()
+    
+    # 返回检测结果 (0 表示成功)
+    set(${result_var} $<BOOL:$<EQUAL:${ping_result},0>> PARENT_SCOPE)
+endfunction()
+
+set(c_IsLocalStorageReachable TRUE)#新增定义 c_StorageHost 前的版本仅使用本地存储流程
+if(c_StorageHost)
+	message("Checking local storage ...")
+	check_host_reachable(${c_StorageHost} IsHostReachable)
+	if(IsHostReachable)
+		message("Local storage is reachable")
+	else()
+		message("Local storage is not reachable")
+		set(c_IsLocalStorageReachable FALSE)
+	endif()
+else()
+	set(c_StorageHost ${DefaultStorageHost})
+endif()
+
+set(c_VpnPort 1080)
+if(c_VpnPort)
+	set(ENV{http_proxy} "http://${c_StorageHost}:${c_VpnPort}")
+	set(ENV{https_proxy} "http://${c_StorageHost}:${c_VpnPort}")
+endif()
 
 FUNCTION(create_source_group relativeSourcePath)
   FOREACH(currentSourceFile ${ARGN})
@@ -33,7 +80,7 @@ FUNCTION(create_source_group relativeSourcePath)
   ENDFOREACH(currentSourceFile ${ARGN})
 ENDFUNCTION()
 
-function(download_files_reserved ListSrcToDownload ListDstDownloaded)
+function(download_files ListSrcToDownload ListDstDownloaded)
 	list(LENGTH ListSrcToDownload ListCount0)
 	list(LENGTH ListDstDownloaded ListCount1)
 	#math(EXPR MinCount "ListCount0 < ListCount1 ? ListCount0 : ListCount1")
@@ -54,6 +101,10 @@ function(download_files_reserved ListSrcToDownload ListDstDownloaded)
 			message(FATAL_ERROR "${c_StorageConfigDownloadingFailedTips}")
 		endif()
 	endforeach()
+endfunction()
+
+function(download_file SrcToDownload DstDownloaded)
+	download_files("${SrcToDownload}" "${DstDownloaded}")
 endfunction()
 
 function(zip_directory DirPathToZip ZipFilePath)
@@ -108,6 +159,10 @@ function(download_zip_replace_dir SrcAddrZipFilePath DstDownloadedFilePath DstUn
 		message(STATUS "File downloaded successfully.")
 		unzip_and_delete("${DstDownloadedFilePath}" "${DstUnzippedDirPath}")
 	else()
+		file(SIZE "${DstDownloadedFilePath}" FileSize)
+		if(FileSize EQUAL 0)
+			file(REMOVE "${DstDownloadedFilePath}")
+		endif()
 		message(FATAL_ERROR "${c_StorageConfigDownloadingFailedTips}")
 	endif()
 endfunction()
