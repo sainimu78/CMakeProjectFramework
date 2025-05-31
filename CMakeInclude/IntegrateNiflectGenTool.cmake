@@ -189,6 +189,11 @@ endif()
 
 #begin, Required
 unset(v_IntegratedToolName)
+unset(v_IntegratedToolRootDirPath)
+unset(v_UnzippedDirPath)
+unset(v_ZipFileName)
+unset(v_SrcAddrZipFilePath)
+unset(v_SrcCloudZipFilePath)
 unset(v_NiflectGenToolBinDirPath)
 unset(v_ListModuleIncludeDirPath)
 #end
