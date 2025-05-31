@@ -13,13 +13,12 @@ include(${c_RootCMakeProjectFrameworkDirPath}/InlineIntegrateTool.cmake)
 set(ToolExeName ${v_IntegratedToolName}${c_ExecutableFileExt})
 set(GenToolExeFilePath ${v_NiflectGenToolBinDirPath}/${ToolExeName})
 
-if(NOT EXISTS "${GenToolExeFilePath}")
-	message(FATAL_ERROR "${GenToolExeFilePath} doesn't exist")
-endif()
-
 set(NiflectRootPath ${c_RootThirdPartyDirPath}/Niflect/Niflect)
 if(v_NiflectRootPath)
 	set(NiflectRootPath ${v_NiflectRootPath})
+endif()
+if(NOT EXISTS "${NiflectRootPath}")
+	message(FATAL_ERROR "Not found: ${NiflectRootPath}")
 endif()
 set(NiflectIncludeDirPath ${NiflectRootPath}/include)
 
