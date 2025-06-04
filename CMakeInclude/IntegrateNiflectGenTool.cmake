@@ -141,6 +141,9 @@ endif()
 #定义变量 set(v_EnabledDebuggerAttaching ON) 启用可附加进程的调试模式
 #定义变量 set(v_EnabledDebugParsingDiagnostics ON) 启用解析诊断信息, 遇错误则生成失败
 set(ListOptToolOption ${v_ListToolOption})
+if(v_EnabledLoadTimeModuleRegistrar)
+	list(APPEND ListOptToolOption "-lmr")
+endif()
 set(ListOptCmdCallingGenTool "")
 if(v_EnabledDebuggerAttaching)
 	list(APPEND ListOptCmdCallingGenTool cmd.exe /C start)
@@ -207,4 +210,5 @@ unset(v_ListIntegratedToolDependency)
 unset(v_EnabledDebuggerAttaching)
 unset(v_EnabledDebugParsingDiagnostics)
 unset(v_ListToolOption)
+unset(v_EnabledLoadTimeModuleRegistrar)
 #endif
