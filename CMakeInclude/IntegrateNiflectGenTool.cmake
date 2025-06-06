@@ -138,8 +138,8 @@ if(DebugIntegration)
 endif()
 
 #在模块 cmake 中, 如 Wishing\Project\TestEditorCLI\TestEngine\CMakeLists.txt
-#定义变量 set(v_EnabledDebuggerAttaching ON) 启用可附加进程的调试模式
-#定义变量 set(v_EnabledDebugParsingDiagnostics ON) 启用解析诊断信息, 遇错误则生成失败
+#定义变量 set(v_EnabledDebuggerAttaching TRUE) 启用可附加进程的调试模式
+#定义变量 set(v_EnabledDebugParsingDiagnostics TRUE) 启用解析诊断信息, 遇错误则生成失败
 set(ListOptToolOption ${v_ListToolOption})
 if(v_EnabledLoadTimeModuleRegistrar)
 	list(APPEND ListOptToolOption "-lmr")
