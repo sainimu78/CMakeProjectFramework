@@ -15,14 +15,13 @@ A cmake project framework based on HFS local storage
 
 1. Place dependencies in a local directory path, such as `F:\sainimu78_Storage`
 2. Open the HFS application downloaded it from https://www.rejetto.com/hfs/
-  - The old version .e.g. `Build 299` is easier to use
-
+   - The old version .e.g. `Build 299` is easier to use
 ### Cloud Storage Setup
 
-The storage must provide the ability of directly downloading via http link
+The storage must has the ability of permanently direct downloading via http link
 
 1. Upload dependencies to a cloud storage
-2. Acquire the access http links of the dependencies
+2. Copy the download http links and paste to cmake scripts of the dependencies
 
 ## Development Usage
 
