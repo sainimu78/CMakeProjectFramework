@@ -25,12 +25,12 @@ The storage must has the ability of permanently direct downloading via http link
 
 ## Development Usage
 
-Once having implemented the the cmake scripts of the project, the simplest development usage is going to be running these platform specific scripts
+Once having implemented the cmake scripts of the project, the simplest development usage is going to be running these platform specific scripts
 
 - Generate
-  - To generate the cmake project when the first time setup, or made some changes need to delete CMakeCache.txt like the changes of cmake options
+  - To generate the cmake project when the first time setup, or made some changes need to delete CMakeCache.txt like changes to CMake options
   - About the first time setup, it is almost the same workflow as running Setup script
-  - If an documenting option enabled, this process will also regenerate the ReleaseNotes.md including the version info and the release description
+  - If a documenting option is enabled, this process will also regenerate the ReleaseNotes.md including the version info and the release description
 - Build
   - To build the cmake project
 - Install
@@ -42,7 +42,7 @@ Once having implemented the the cmake scripts of the project, the simplest devel
 - Setup
   - To re-deploy all the dependencies of the project
     - The deployment including the shared libraries (.so/.dll) installation
-  - To re-deploy for only one dependency by mannully deleting the corresponding deployed directory
+  - To re-deploy for only one dependency by manually deleting the corresponding deployed directory
 - Test
   - To test the built targets
 - Clean
