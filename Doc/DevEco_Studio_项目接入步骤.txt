@@ -25,9 +25,11 @@
 	Project\Niflect
 	Source\Niflect
 5. 在 C++ 入口项目 entry\src\main\cpp\MyIntegration\Project\HelloWorld\CMakeLists.txt 中
+	在 include(${c_RootCMakeProjectFrameworkDirPath}/ProjectBegin.cmake) 之后的位置
+	删除 project(${c_ProjectName})
 	在 include(${c_RootCMakeProjectFrameworkDirPath}/ProjectEnd.cmake) 之后的位置
 	删除 include(${c_RootCMakeProjectFrameworkDirPath}/InitCMakeTargetOutputDirPaths.cmake)
-	增加 cpf_include(${c_RootProjectDirPath}/Niflect/Niflect/Shared.cmake)#原为 exe 模块, 现改为 Native 功能入口模块, 加之现无 Niflect 独立构建 DevEco 项目, 因此在此处加入 Niflect 源码
+	并增加 cpf_include(${c_RootProjectDirPath}/Niflect/Niflect/Shared.cmake)#原为 exe 模块, 现改为 Native 功能入口模块, 加之现无 Niflect 独立构建 DevEco 项目, 因此在此处加入 Niflect 源码
 	将原 exe 模块 add_executable(${ModuleName} ${SrcAll})
 	改为如动态库 add_library(${ModuleName} SHARED ${SrcAll})
 6. 将 C++ 入口项目的入口改为适合调用的写法, 如
