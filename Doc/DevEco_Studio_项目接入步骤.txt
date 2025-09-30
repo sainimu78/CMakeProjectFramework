@@ -1,0 +1,58 @@
+通过 CMakeProjectFramework 的 C++ 项目改为 DevEco Studio 项目的步骤
+
+1. 创建 Native C++ 模板项目, 勾选 Tablet 方便测试
+	在构建配置 entry\build-profile.json5 增加如 Tablet 的 ABI 配置
+	"externalNativeOptions": {
+	  "path": "./src/main/cpp/CMakeLists.txt",
+	  "arguments": "",
+	  "cppFlags": "",
+	  "abiFilters": ["arm64-v8a", "x86_64"] <----------
+	}
+	改配置后看到提示 Sync now, 要点击执行
+	此时在 Device Manager 中启动模拟器, 即可点调试自动构建部署运行
+2. 在 C++ 原生层入口 entry\src\main\cpp\CMakeLists.txt 加入
+	add_subdirectory(MyIntegration/Project/HelloWorld)
+	target_link_libraries(entry PRIVATE HelloWorld)
+3. 将 C++ 原生入口层项目中的目录和文件复制到 entry\src\main\cpp\MyIntegration
+	Project\HelloWorld
+	Project\InitRootPath.cmake
+	Source\HelloWorld
+	ThirdParty\CMakeProjectFramework
+	ThirdParty\Niflect
+	ThirdParty\NiflectGenTool
+4. 目前 Niflect 无独立 DevEco Studio 项目, 因此以源码构建, 将 Niflect 项目中的目录复制到 entry\src\main\cpp\MyIntegration
+	Project\Niflect
+	Source\Niflect
+5. 在 C++ 入口项目 entry\src\main\cpp\MyIntegration\Project\HelloWorld\CMakeLists.txt 中
+	在 include(${c_RootCMakeProjectFrameworkDirPath}/ProjectEnd.cmake) 之后的位置
+	删除 include(${c_RootCMakeProjectFrameworkDirPath}/InitCMakeTargetOutputDirPaths.cmake)
+	增加 cpf_include(${c_RootProjectDirPath}/Niflect/Niflect/Shared.cmake)#原为 exe 模块, 现改为 Native 功能入口模块, 加之现无 Niflect 独立构建 DevEco 项目, 因此在此处加入 Niflect 源码
+	将原 exe 模块 add_executable(${ModuleName} ${SrcAll})
+	改为如动态库 add_library(${ModuleName} SHARED ${SrcAll})
+6. 将 C++ 入口项目的入口改为适合调用的写法, 如
+	增加头文件 entry\src\main\cpp\MyIntegration\Source\HelloWorld\include\MyIntegration.h
+	增加
+	#pragma once
+	__attribute__((visibility("default"))) int TestMyIntegration();
+	在 entry\src\main\cpp\MyIntegration\Source\HelloWorld\src\Main.cpp 中
+	增加
+	#include "MyIntegration.h"
+	将 int main() 改为 int TestMyIntegration()
+7. 之前的步骤已将 Niflect 以源码构建, 因此将 entry\src\main\cpp\MyIntegration\ThirdParty\Niflect\Shared.cmake 全部内容删除
+	增加 target_link_libraries(${ModuleName} PRIVATE Niflect)
+8. 此时可加测试, 在 entry\src\main\cpp\napi_init.cpp 中
+	增加
+	#include "MyIntegration.h"
+	并在 Add 函数中调用
+	TestMyIntegration();
+9. 打印调试可使用 hilog, 在 entry\src\main\cpp\CMakeLists.txt 中
+	增加 target_link_libraries(entry PUBLIC libhilog_ndk.z.so)
+	在需要打印的位置前增加, 或定义在公共头文件中
+	#include "hilog/log.h"
+	#undef LOG_DOMAIN
+	#undef LOG_TAG
+	#define LOG_DOMAIN 0x3200  // 全局domain宏，标识业务领域
+	#define LOG_TAG "testTag"
+	代码中使用
+	OH_LOG_DEBUG(LOG_APP, "%{public}s", combinedFieldNames.c_str());
+	打印信息输出到 Log 面板, Log 需要设置过滤, 找到 Config custom filter, Filter name 填 testTag, Log message 填 testTag
