@@ -1,4 +1,5 @@
 通过 CMakeProjectFramework 的 C++ 项目改为 DevEco Studio 项目的步骤
+总体上移植的修改主要在入口项目, 且修改极少, 其它移植可能是依赖项目的移植, 如无独立构建项目以及合适的部署流程, 可能需要以源码接入
 
 1. 创建 Native C++ 模板项目, 勾选 Tablet 方便测试
 	在构建配置 entry\build-profile.json5 增加如 Tablet 的 ABI 配置
@@ -8,7 +9,7 @@
 	  "cppFlags": "",
 	  "abiFilters": ["arm64-v8a", "x86_64"] <----------
 	}
-	改配置后看到提示 Sync now, 要点击执行
+	改配置后看到提示 Sync Now, 可点击执行
 	此时在 Device Manager 中启动模拟器, 即可点调试自动构建部署运行
 2. 在 C++ 原生层入口 entry\src\main\cpp\CMakeLists.txt 加入
 	add_subdirectory(MyIntegration/Project/HelloWorld)
