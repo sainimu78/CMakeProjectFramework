@@ -1,6 +1,6 @@
 set(DeployingNeeded FALSE)
 set(DstDownloadedFilePath ${v_ImportedLibRootDirPath}/${v_ZipFileName})
-if(c_ProjectPipelineSetup OR NOT EXISTS "${v_UnzippedDirPath}")
+if(c_ProjectPipelineSetup OR NOT EXISTS "${v_LibPlatformArchDirPath}")
 	set(DeployingNeeded TRUE)
 endif()
 

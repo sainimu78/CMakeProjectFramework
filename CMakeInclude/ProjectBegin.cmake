@@ -159,7 +159,7 @@ function(unzip_file ZipFilePath DirPathUnzipTo)
 		include(${c_RootCMakeProjectFrameworkDirPath}/GetZip.cmake)
 		string(REPLACE "/" "\\" DirPathToCreate "${DirPathUnzipTo}")
 		execute_process(
-			COMMAND ${ExeFilePath7z} x "${ZipFilePath}" -o${DirPathToCreate}
+			COMMAND ${ExeFilePath7z} x "${ZipFilePath}" -o${DirPathToCreate} -y
 			RESULT_VARIABLE ZIP_RESULT
 		)
 	else()
@@ -171,7 +171,6 @@ function(unzip_file ZipFilePath DirPathUnzipTo)
 endfunction()
 
 function(unzip_and_delete DstDownloadedFilePath DstUnzippedDirPath)
-	file(REMOVE_RECURSE "${DstUnzippedDirPath}")
 	get_filename_component(ParentDir "${DstUnzippedDirPath}" DIRECTORY)
 	unzip_file(${DstDownloadedFilePath} ${ParentDir})
 	file(REMOVE "${DstDownloadedFilePath}")

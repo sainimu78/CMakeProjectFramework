@@ -197,6 +197,7 @@ unset(v_SrcZipAddrFilePath)
 unset(v_SrcZipCloudFilePath)
 unset(v_NiflectGenToolBinDirPath)
 unset(v_ListModuleIncludeDirPath)
+unset(v_LibPlatformArchDirPath)
 #end
 
 #begin, Optional
