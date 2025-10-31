@@ -1,6 +1,17 @@
 set(DeployingNeeded FALSE)
 set(DstDownloadedFilePath ${v_ImportedLibRootDirPath}/${v_ZipFileName})
-if(c_ProjectPipelineSetup OR NOT EXISTS "${v_LibPlatformArchDirPath}")
+set(NonPipelineSetupDependencyCheckingDirPath )
+#指定 v_LibPlatformArchDirPath 可支持 Windows 宿主机中使用 VS + Ubuntu 容器中构建共用挂载目录
+#但须注意应先 Generate.bat 再 Generate.sh 或先 Setup.bat 再 Update.sh, 否则 Windows 中文件系统修改挂载目录会导致 Ubuntu 的文件系统出错如头文件中定义重复
+#上述方式, 由于在挂载目录中操作, 构建等过程执行缓慢, 并不建议使用, 更建议使用 VS Code + Remote SSH
+if(v_LibPlatformArchDirPath)
+	set(NonPipelineSetupDependencyCheckingDirPath ${v_LibPlatformArchDirPath})
+elseif(v_UnzippedDirPath)
+	set(NonPipelineSetupDependencyCheckingDirPath ${v_UnzippedDirPath})
+else()
+	message(FATAL_ERROR "Must specify v_LibPlatformArchDirPath or v_UnzippedDirPath")
+endif()
+if(c_ProjectPipelineSetup OR NOT EXISTS "${NonPipelineSetupDependencyCheckingDirPath}")
 	set(DeployingNeeded TRUE)
 endif()
 
